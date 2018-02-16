@@ -2,6 +2,7 @@
 #define TOOLS_H_
 #include <vector>
 #include "Eigen/Dense"
+#include <iostream>
 
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
@@ -30,5 +31,14 @@ public:
   MatrixXd CalculateJacobian(const VectorXd& x_state);
 
 };
+
+template <typename T, typename U=string>
+void print(T item, U ending="\n") {
+  std::cout << item << ending;
+}
+
+void done();
+
+void done(std::string msg);
 
 #endif /* TOOLS_H_ */
