@@ -12,7 +12,6 @@ Tools::~Tools() {}
 VectorXd Tools::CalculateRMSE(const vector<VectorXd> &estimations,
                               const vector<VectorXd> &ground_truth) {
 	/**
-	TODO:
 	* Calculate the RMSE here.
 	*/
 	VectorXd rmse(4);
@@ -62,7 +61,7 @@ MatrixXd Tools::CalculateJacobian(const VectorXd& x_state) {
 
 	//check division by zero
 	if(fabs(c1) < 0.0001){
-		cout << "CalculateJacobian () - Error - Division by Zero" << endl;
+		print("CalculateJacobian () - Error - Division by Zero");
 		return Hj;
 	}
 

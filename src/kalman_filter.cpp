@@ -5,6 +5,7 @@ using Eigen::MatrixXd;
 using Eigen::VectorXd;
 
 #include "tools.h"
+#define PI 3.14159265359
 
 
 // Please note that the Eigen library does not initialize 
@@ -27,7 +28,7 @@ void KalmanFilter::Init(VectorXd &x_in, MatrixXd &P_in, MatrixXd &F_in,
 
 void KalmanFilter::Predict() {
   x_ = F_ * x_;// + u_;
-  P_ = F_ * P_ * F_.transpose();
+  P_ = F_ * P_ * F_.transpose() + Q_;
 }
 
 void KalmanFilter::Update(const VectorXd &z) {
@@ -60,10 +61,28 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   double sssqr = sqrt(px * px + py * py);
   z_pred << 
     sssqr,
-    atan(py / px),
-    px * vx + py * vy / sssqr;
+    atan2(py, px),
+    (px * vx + py * vy) / sssqr;
 
-  MatrixXd y = z - z_pred;
+  if(fabs(sssqr) < 0.0001) {
+    print("Radar Measurment function - Error - Division by Zero");
+    print(z_pred);
+  }
+
+  VectorXd y = z - z_pred;
+
+  // Wrap angle into -pi, pi range.
+  // y[1] = fmod(y[1] + PI, 2*PI) - PI;
+  if(y[1] > PI)
+    y[1] -= 2*PI;
+  if(y[1] < -PI)
+    y[1] += 2*PI;
+  if(y[1] < -PI || y[1] > PI) {
+    print("Radar measurment error angle phi out of range!");
+    print("y[1] = ", "");
+    print(y[1]);
+  }
+
   MatrixXd S = H_ * P_ * H_.transpose() + R_;
   MatrixXd K = P_ * H_.transpose() * S.inverse();
 

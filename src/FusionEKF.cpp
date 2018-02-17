@@ -101,17 +101,20 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
       /**
       Convert radar from polar to cartesian coordinates and initialize state.
       */
-      double ro, theta, ro_dot, x, y, vx, vy;
+      double ro, theta, x, y;
       ro = measurement_pack.raw_measurements_[0];
       theta = measurement_pack.raw_measurements_[1];
-      ro_dot = measurement_pack.raw_measurements_[2];
 
       x = ro * cos(theta);
       y = ro * sin(theta);
-      vx = ro_dot * cos(theta);
-      vy = ro_dot * sin(theta);
 
-      ekf_.x_ << x, y, vx, vy;
+      // "Although radar gives velocity data in the form of the range rate ,
+      //  a radar measurement does not contain enough information 
+      //  to determine the state variable velocities."
+      // ro_dot = measurement_pack.raw_measurements_[2];
+      // vx = ro_dot * cos(theta);
+      // vy = ro_dot * sin(theta);
+      ekf_.x_ << x, y, 0, 0; //vx, vy;
 
     }
     else if (measurement_pack.sensor_type_ == MeasurementPackage::LASER) {
@@ -138,11 +141,6 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
   double t = SECONDSPERTIMESTAMPUNIT * measurement_pack.timestamp_;
   double dt = t - previous_timestamp_;
   previous_timestamp_ = t;
-  print("t=", "");
-  print(previous_timestamp_, ", ");
-  print("dt=", "");
-  print(dt);
-
 
   // Update the state transition matrix F according to the new elapsed time.
   ekf_.F_ << 
@@ -153,18 +151,21 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 
   // Update the process noise covariance matrix.
   // Use noise_ax = 9 and noise_ay = 9 for your Q matrix.
-  double nax, nay, a, b, c;
+  double nax, nay, ax, bx, cx, ay, by, cy;
   nax = 9; 
   nay = 9;
-  a = pow(dt, 4) * pow(nax, 2) / 4;
-  b = pow(dt, 3) * pow(nax, 2) / 2;
-  c = pow(dt, 2) * pow(nax, 2);
+  ax = pow(dt, 4) * pow(nax, 2) / 4;
+  bx = pow(dt, 3) * pow(nax, 2) / 2;
+  cx = pow(dt, 2) * pow(nax, 2);
+  ay = pow(dt, 4) * pow(nay, 2) / 4;
+  by = pow(dt, 3) * pow(nay, 2) / 2;
+  cy = pow(dt, 2) * pow(nay, 2);
 
   ekf_.Q_ << 
-    a, 0, b, 0,
-    0, a, 0, b,
-    b, 0, c, 0,
-    0, b, 0, c;
+    ax, 0,  bx, 0,
+    0,  ay, 0,  by,
+    bx, 0,  cx, 0,
+    0,  by, 0,  cy;
 
   ekf_.Predict();
 
