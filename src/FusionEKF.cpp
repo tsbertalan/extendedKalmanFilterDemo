@@ -152,8 +152,8 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
   // Update the process noise covariance matrix.
   // Use noise_ax = 9 and noise_ay = 9 for your Q matrix.
   double nax, nay, ax, bx, cx, ay, by, cy;
-  nax = 9; 
-  nay = 9;
+  nax = 3; 
+  nay = 3;
   ax = pow(dt, 4) * pow(nax, 2) / 4;
   bx = pow(dt, 3) * pow(nax, 2) / 2;
   cx = pow(dt, 2) * pow(nax, 2);
