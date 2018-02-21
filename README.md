@@ -5,6 +5,8 @@ In this project I utilize a kalman filter to estimate the state of a moving obje
 
 Much of the code here is very similar to that developed over the course of the first few lessons in Term 2 on the EKF and sensor fusion for lidar and radar sensors. However, as a result, the `FusionEKF` and `KalmanFilter` objects are tightly coupled. A better approach would be use `Sensor` and `MotionModel` base classes providing an interface with appropriate methods for calculating the measurment update and motion prediction operators given a state vector. This would enable easy generalization to more than two sensors. As it stands, there are separate `KalmanFilter::Update` and `KalmanFilter::UpdateEKF` methods for the laser and radar sensors respectively.
 
+Results are shown below. Points in blue and red are sensor data, while points in green are the smoothed trajectory (position portion only).
+
 ![sample results](Docs/kalman.png)
 
 While the achived RMSE on the figure-8 dataset is below the required threshold, I think there might be some turning overshoot. This should be rectified with the use of a more realistic (nonlinear) motion model.
