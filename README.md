@@ -3,11 +3,13 @@ Self-Driving Car Engineer Nanodegree Program
 
 In this project I utilize a kalman filter to estimate the state of a moving object of interest with noisy lidar and radar measurements.
 
+Much of the code here is very similar to that developed over the course of the first few lessons in Term 2 on the EKF and sensor fusion for lidar and radar sensors. However, as a result, the `FusionEKF` and `KalmanFilter` objects are tightly coupled. A better approach would be use `Sensor` and `MotionModel` base classes providing an interface with appropriate methods for calculating the measurment update and motion prediction operators given a state vector. This would enable easy generalization to more than two sensors. As it stands, there are separate `KalmanFilter::Update` and `KalmanFilter::UpdateEKF` methods for the laser and radar sensors respectively.
+
 ![sample results](Docs/kalman.png)
 
 While the achived RMSE on the figure-8 dataset is below the required threshold, I think there might be some turning overshoot. This should be rectified with the use of a more realistic (nonlinear) motion model.
 
-This project involves the Term 2 Simulator which can be downloaded [here](https://github.com/udacity/self-driving-car-sim/releases)
+This project uses the Term 2 Simulator which can be downloaded [here](https://github.com/udacity/self-driving-car-sim/releases)
 
 This repository includes two files that can be used to set up and install [uWebSocketIO](https://github.com/uWebSockets/uWebSockets) for either Linux or Mac systems. For windows you can use either Docker, VMware, or even [Windows 10 Bash on Ubuntu](https://www.howtogeek.com/249966/how-to-install-and-use-the-linux-bash-shell-on-windows-10/) to install uWebSocketIO. Please see [this concept in the classroom](https://classroom.udacity.com/nanodegrees/nd013/parts/40f38239-66b6-46ec-ae68-03afd8a601c8/modules/0949fca6-b379-42af-a919-ee50aa304e6a/lessons/f758c44c-5e40-4e01-93b5-1a82aa4e044f/concepts/16cf4a78-4fc7-49e1-8621-3450ca938b77) for the required version and installation scripts.
 

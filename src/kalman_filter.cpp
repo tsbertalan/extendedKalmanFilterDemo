@@ -65,7 +65,7 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
     (px * vx + py * vy) / sssqr;
 
   if(fabs(sssqr) < 0.0001) {
-    print("Radar Measurment function - Error - Division by Zero");
+    print("ERROR: Division by zero in radar measurment update.");
     print(z_pred);
   }
 
@@ -78,7 +78,7 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   if(y[1] < -PI)
     y[1] += 2*PI;
   if(y[1] < -PI || y[1] > PI) {
-    print("Radar measurment error angle phi out of range!");
+    print("ERROR: Radar measurment error angle phi out of range [-pi, pi]!");
     print("y[1] = ", "");
     print(y[1]);
   }
